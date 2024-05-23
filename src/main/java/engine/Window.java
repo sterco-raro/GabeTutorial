@@ -21,10 +21,17 @@ public class Window {
 
 	private long glfwWindow;
 
+	private float r, g, b, a;
+	private boolean fadeToBlack = false;
+
 	private Window() {
 		this.width = 800;
 		this.height = 600;
 		this.title = "GabeTutorial";
+		r = 0.95f;
+		g = 0.95f;
+		b = 0.95f;
+		a = 1.0f;
 	}
 
 	public static Window get() {
@@ -73,6 +80,12 @@ public class Window {
 			throw new IllegalStateException("Failed to create the GLFW window");
 		}
 
+		// Set up input callbacks
+		glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+		glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+		glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+		glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+
 		glfwMakeContextCurrent(glfwWindow);
 		// Enable V-Sync
 		glfwSwapInterval(1);
@@ -94,8 +107,18 @@ public class Window {
 			glfwPollEvents();
 
 			// Clear the screen using the clear color defined here
-			glClearColor(0.95f, 0.95f, 0.95f, 1.0f);
+			glClearColor(r, g, b, a);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			if (fadeToBlack) {
+				r = Math.max(r - 0.001f, 0);
+				g = Math.max(g - 0.001f, 0);
+				b = Math.max(b - 0.001f, 0);
+			}
+
+			if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)) {
+				fadeToBlack = true;
+			}
 
 			glfwSwapBuffers(glfwWindow);
 		}
