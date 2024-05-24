@@ -48,8 +48,10 @@ public class Window {
 	public static void changeScene(int sceneIndex) {
 		if (sceneIndex == 0) {
 			currentScene = new LevelEditorScene();
+			currentScene.init();
 		} else if (sceneIndex == 1) {
 			currentScene = new LevelScene();
+			currentScene.init();
 		} else {
 			assert false : String.format("Unknown sceneIndex [%d]", sceneIndex);
 		}
@@ -111,7 +113,7 @@ public class Window {
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
-		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_DEPTH_TEST);
 
 		Window.changeScene(0);
 	}
