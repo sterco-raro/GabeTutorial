@@ -3,6 +3,7 @@ package engine;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+import utils.Time;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -13,6 +14,8 @@ public class Window {
 
 	private static Window instance = null;
 
+	private static Scene currentScene = null;
+
 	private int width;
 
 	private int height;
@@ -21,7 +24,7 @@ public class Window {
 
 	private long glfwWindow;
 
-	private float r, g, b, a;
+	public float r, g, b, a;
 	private boolean fadeToBlack = false;
 
 	private Window() {
@@ -40,6 +43,16 @@ public class Window {
 		}
 
 		return Window.instance;
+	}
+
+	public static void changeScene(int sceneIndex) {
+		if (sceneIndex == 0) {
+			currentScene = new LevelEditorScene();
+		} else if (sceneIndex == 1) {
+			currentScene = new LevelScene();
+		} else {
+			assert false : String.format("Unknown sceneIndex [%d]", sceneIndex);
+		}
 	}
 
 	public void run() {
@@ -99,9 +112,16 @@ public class Window {
 		// bindings available for use.
 		GL.createCapabilities();
 		glEnable(GL_DEPTH_TEST);
+
+		Window.changeScene(0);
 	}
 
 	private void loop() {
+
+		float frameBeginTime = Time.getTime();
+		float frameEndTime;
+		float dt = -1.0f;
+
 		while (!glfwWindowShouldClose(glfwWindow)) {
 
 			glfwPollEvents();
@@ -110,17 +130,17 @@ public class Window {
 			glClearColor(r, g, b, a);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			if (fadeToBlack) {
-				r = Math.max(r - 0.001f, 0);
-				g = Math.max(g - 0.001f, 0);
-				b = Math.max(b - 0.001f, 0);
+			if (dt >= 0) {
+				currentScene.update(dt);
 			}
 
-			if (KeyListener.isKeyPressed(GLFW_KEY_SPACE)) {
-				fadeToBlack = true;
-			}
-
+			// Update screen
 			glfwSwapBuffers(glfwWindow);
+
+			// At the end to take into account OS interrupts
+			frameEndTime = Time.getTime();
+			dt = frameEndTime - frameBeginTime;
+			frameBeginTime = frameEndTime;
 		}
 	}
 }
