@@ -3,10 +3,13 @@ package engine;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
+import utils.Time;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
@@ -36,7 +39,7 @@ public class LevelEditorScene extends Scene {
 
 	@Override
 	public void init() {
-		camera = new Camera(new Vector2f(-200.0f, -200.0f));
+		camera = new Camera(new Vector2f(-400.0f, -300.0f));
 		camera.adjustProjection();
 
 		defaultShader = new Shader("assets/shaders/default.glsl");
@@ -81,9 +84,14 @@ public class LevelEditorScene extends Scene {
 
 	@Override
 	public void update(float dt) {
+		camera.position.x += 0.05f;
+		camera.position.y += 0.05f;
+
 		defaultShader.use();
 		defaultShader.uploadMat4f("uProjection", camera.getProjectionMatrix());
 		defaultShader.uploadMat4f("uView", camera.getViewMatrix());
+		defaultShader.uploadFloat("uTime", Time.getTime());
+
 		// Bind the VAO that we're using
 		glBindVertexArray(vaoID);
 		// Enable the vertex attribute pointers
