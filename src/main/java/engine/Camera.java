@@ -8,7 +8,7 @@ public class Camera {
 
 	private Matrix4f projectionMatrix, viewMatrix;
 
-	public Vector2f position;
+	private Vector2f position;
 
 	public Camera(Vector2f position) {
 		this.position = position;
