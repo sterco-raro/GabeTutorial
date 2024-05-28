@@ -57,6 +57,10 @@ public class Window {
 		currentScene.start();
 	}
 
+	public static Scene getScene() {
+		return currentScene;
+	}
+
 	public void run() {
 		System.out.println("LWJGL version: " + Version.getVersion());
 

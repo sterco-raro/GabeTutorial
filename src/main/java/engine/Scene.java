@@ -1,9 +1,13 @@
 package engine;
 
+import renderer.Renderer;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Scene {
+
+	protected Renderer renderer;
 
 	protected Camera camera;
 
@@ -18,6 +22,7 @@ public abstract class Scene {
 	public void start() {
 		for (GameObject go : gameObjects) {
 			go.start();
+			renderer.add(go);
 		}
 		isRunning = true;
 	}
@@ -28,8 +33,13 @@ public abstract class Scene {
 		} else {
 			gameObjects.add(go);
 			go.start();
+			renderer.add(go);
 		}
 	}
 
 	public abstract void update(float dt);
+
+	public Camera getCamera() {
+		return camera;
+	}
 }
