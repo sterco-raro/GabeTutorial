@@ -48,13 +48,13 @@ public class Window {
 	public static void changeScene(int sceneIndex) {
 		if (sceneIndex == 0) {
 			currentScene = new LevelEditorScene();
-			currentScene.init();
 		} else if (sceneIndex == 1) {
 			currentScene = new LevelScene();
-			currentScene.init();
 		} else {
 			assert false : String.format("Unknown sceneIndex [%d]", sceneIndex);
 		}
+		currentScene.init();
+		currentScene.start();
 	}
 
 	public void run() {

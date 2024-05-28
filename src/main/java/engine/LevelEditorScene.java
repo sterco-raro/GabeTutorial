@@ -1,5 +1,7 @@
 package engine;
 
+import components.FontRenderer;
+import components.SpriteRenderer;
 import org.joml.Vector2f;
 import org.lwjgl.BufferUtils;
 import renderer.Shader;
@@ -34,6 +36,8 @@ public class LevelEditorScene extends Scene {
 
 	private Texture testTexture;
 
+	private GameObject testObj;
+
 	public LevelEditorScene() {
 		System.out.println("LevelEditorScene");
 	}
@@ -47,6 +51,11 @@ public class LevelEditorScene extends Scene {
 		defaultShader.compile();
 
 		testTexture = new Texture("assets/graphics/test.png");
+
+		testObj = new GameObject("UNO");
+		testObj.addComponent(new SpriteRenderer());
+		testObj.addComponent(new FontRenderer());
+		this.addGameObjectToScene(testObj);
 
 		// ============================
 		//   VAO, VBO, EBO objects
@@ -111,5 +120,10 @@ public class LevelEditorScene extends Scene {
 		glDisableVertexAttribArray(1);
 		glBindVertexArray(0);
 		defaultShader.detach();
+
+
+		for (GameObject go :  gameObjects) {
+			go.update(dt);
+		}
 	}
 }
