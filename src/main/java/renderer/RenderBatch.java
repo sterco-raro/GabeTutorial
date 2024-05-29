@@ -3,6 +3,7 @@ package renderer;
 import components.SpriteRenderer;
 import engine.Window;
 import org.joml.Vector4f;
+import utils.AssetPool;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -37,8 +38,7 @@ public class RenderBatch {
 		this.numSprites = 0;
 		this.hasRoom = true;
 
-		shader = new Shader("assets/shaders/default.glsl");
-		shader.compile();
+		shader = AssetPool.getShader("assets/shaders/default.glsl");
 
 		sprites = new SpriteRenderer[maxBatchSize];
 
