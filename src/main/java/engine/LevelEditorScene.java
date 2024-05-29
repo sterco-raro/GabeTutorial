@@ -43,6 +43,7 @@ public class LevelEditorScene extends Scene {
 
 	@Override
 	public void update(float dt) {
+		// TODO FPS counter
 		//System.out.println("FPS: " + (1.0f / dt));
 
 		for (GameObject go :  gameObjects) {

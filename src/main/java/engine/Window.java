@@ -3,7 +3,6 @@ package engine;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
-import utils.Time;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -127,7 +126,7 @@ public class Window {
 
 	private void loop() {
 
-		float frameBeginTime = Time.getTime();
+		float frameBeginTime = (float) glfwGetTime();
 		float frameEndTime;
 		float dt = -1.0f;
 
@@ -147,7 +146,7 @@ public class Window {
 			glfwSwapBuffers(glfwWindow);
 
 			// At the end to take into account OS interrupts
-			frameEndTime = Time.getTime();
+			frameEndTime = (float) glfwGetTime();
 			dt = frameEndTime - frameBeginTime;
 			frameBeginTime = frameEndTime;
 		}
