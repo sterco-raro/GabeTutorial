@@ -34,7 +34,7 @@ public class RenderBatch {
 	private final int VERTEX_SIZE = 9;
 	private final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
-	private SpriteRenderer[] sprites;
+	private SpriteRenderer[] spriteRenderers;
 	private int numSprites;
 	private boolean hasRoom;
 	private float[] vertices;
@@ -53,7 +53,7 @@ public class RenderBatch {
 
 		shader = AssetPool.getShader("assets/shaders/default.glsl");
 
-		sprites = new SpriteRenderer[maxBatchSize];
+		spriteRenderers = new SpriteRenderer[maxBatchSize];
 
 		// 4 vertices quad
 		vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
@@ -89,9 +89,20 @@ public class RenderBatch {
 	}
 
 	public void render() {
-		// For now we will rebuffer all data every frame
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+		boolean rebufferData = false;
+		for (int i = 0; i < numSprites; i++) {
+			SpriteRenderer spriteRenderer = spriteRenderers[i];
+			if (spriteRenderer.isDirty()) {
+				loadVertexProperties(i);
+				spriteRenderer.setClean();
+				rebufferData = true;
+			}
+		}
+
+		if (rebufferData) {
+			glBindBuffer(GL_ARRAY_BUFFER, vboID);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+		}
 
 		shader.use();
 		shader.uploadMat4f("uProjection", Window.getScene().getCamera().getProjectionMatrix());
@@ -124,7 +135,7 @@ public class RenderBatch {
 	public void addSprite(SpriteRenderer sprite) {
 		// Get index and add renderObject
 		int index = numSprites;
-		this.sprites[numSprites] = sprite;
+		this.spriteRenderers[numSprites] = sprite;
 		numSprites += 1;
 
 		if (sprite.getTexture() != null) {
@@ -182,7 +193,7 @@ public class RenderBatch {
 	}
 
 	private void loadVertexProperties(int index) {
-		SpriteRenderer sprite = this.sprites[index];
+		SpriteRenderer sprite = this.spriteRenderers[index];
 
 		Vector4f color = sprite.getColor();
 		Vector2f[] texCoords = sprite.getTexCoords();
